@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Aurora Australis Predictor",
+    "slug": "aurora-australis-predictor",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Your location helps estimate Aurora Australis visibility for your latitude.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location helps estimate Aurora Australis visibility for your latitude."
+      }
+    },
+    "android": {
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-notifications",
+      "expo-location"
+    ]
+  }
+}
