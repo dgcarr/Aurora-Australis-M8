@@ -1,33 +1,141 @@
-# Aurora Australis Predictor (React Native / Expo)
+# Aurora Australis Predictor (React Native + Expo)
 
-A vibrant React Native app that monitors Australian space weather data and predicts Aurora Australis potential 1–3 days in advance.
+Aurora Australis Predictor is a mobile app that turns live Australian space weather data into a simple **1–3 day aurora viewing outlook**.
 
-## Features
+It is built with React Native on Expo and is designed for quick, practical decisions:
+- Is it worth heading out tonight?
+- Are conditions improving?
+- Is there an active BoM notice I should know about?
 
-- Modern neon/aurora visual style on app launch
-- Uses BoM Space Weather Services API (`https://sws-data.sws.bom.gov.au/`)
-- Tracks key aurora indicators:
-  - **Kp-index** (target 4–7)
-  - **Solar wind speed** (target > 450 km/s)
-  - **IMF Bz** (target negative)
-- Requests location permission to personalize viewing context by latitude
-- Alerts user when any Australian aurora **alert/watch/outlook** notice is current
-- In-app camera setting tips for photographing aurora
+---
 
-## Quick start
+## What the app does
+
+The app combines three live indicators from the BoM Space Weather Services API:
+- **Kp index** (geomagnetic activity)
+- **Solar wind speed**
+- **IMF Bz** (southward magnetic component)
+
+Using these thresholds:
+- Kp: **4–7**
+- Solar wind: **> 450 km/s**
+- Bz: **negative**
+
+…the app calculates an easy forecast rating:
+- **Excellent**
+- **Promising**
+- **Low**
+
+It also:
+- displays current Australian aurora notices (alert/watch/outlook),
+- requests location permission to show latitude context,
+- requests notification permission and sends a local notification when a new notice appears,
+- caches latest data for faster startup,
+- auto-refreshes in the foreground every 15 minutes,
+- includes built-in camera tips for aurora photography.
+
+---
+
+## How it works (high-level flow)
+
+1. **Launch animation** is shown briefly.
+2. App requests:
+   - foreground location permission,
+   - notification permission.
+3. App loads cached data (if available) from local storage.
+4. App fetches live conditions + notices from BoM SWS endpoints.
+5. App computes the forecast rating from current thresholds.
+6. If a new relevant notice is detected, the app schedules a local notification.
+7. Dashboard updates with freshness/state indicators and allows pull-to-refresh.
+
+---
+
+## Clone and run with Expo (Expo Go)
+
+### 1) Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd Aurora-Australis-M8
+```
+
+### 2) Install dependencies
 
 ```bash
 npm install
-npm run start
 ```
 
-Then open with Expo Go (iOS/Android) or an emulator.
+### 3) Start the Expo development server
 
-## API endpoint note
+```bash
+npx expo start
+```
 
-`src/services/swsApi.js` is pre-configured with endpoint paths derived from BoM SWS API examples. If endpoint paths change, update the `ENDPOINTS` object there.
+### 4) Run the app
+
+- Install **Expo Go** on your iOS or Android device.
+- Scan the QR code shown in the terminal/browser after `expo start`.
+- Or press `a` (Android emulator), `i` (iOS simulator on macOS), or `w` (web).
+
+---
+
+## Run/build with EAS (Expo Application Services)
+
+If you want cloud builds (APK/AAB/IPA) instead of only local Expo Go preview:
+
+### 1) Install EAS CLI
+
+```bash
+npm install -g eas-cli
+```
+
+### 2) Log in to Expo
+
+```bash
+eas login
+```
+
+### 3) Configure EAS in the project
+
+```bash
+eas build:configure
+```
+
+### 4) Start a build
+
+```bash
+# Android
+eas build --platform android
+
+# iOS
+eas build --platform ios
+```
+
+> Note: iOS production builds require an Apple Developer setup.
+
+---
+
+## Scripts
+
+```bash
+npm run start      # expo start
+npm run android    # expo run:android
+npm run ios        # expo run:ios
+npm run web        # expo start --web
+```
+
+---
+
+## Data source
+
+- BoM Space Weather Services API base URL: `https://sws-data.sws.bom.gov.au/`
+- Endpoint mappings are defined in: `src/services/swsApi.js`
+
+If endpoint paths change upstream, update the `ENDPOINTS` object in that file.
+
+---
 
 ## Permissions used
 
-- Location (foreground): estimate visibility by user latitude
-- Notifications: deliver aurora notice alerts
+- **Location (foreground):** used to provide latitude-based viewing context.
+- **Notifications:** used to alert the user when a new aurora notice is detected.
