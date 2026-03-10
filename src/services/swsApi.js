@@ -11,6 +11,18 @@ const ENDPOINTS = {
   notices: '/aurora/notices',
 };
 
+const STALE_AFTER_MS = 60 * 60 * 1000;
+
+function safeNumber(value, fallback = 0) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function safeString(value, fallback = 'Unknown') {
+  if (typeof value === 'string' && value.trim()) return value;
+  return fallback;
+}
+
 async function getJson(path, query = '') {
   const url = `${API_BASE}${path}${query}`;
   const response = await fetch(url);
@@ -22,29 +34,48 @@ async function getJson(path, query = '') {
   return response.json();
 }
 
+function buildFreshnessInfo(fetchedAt, staleAfterMs = STALE_AFTER_MS) {
+  return {
+    fetchedAt,
+    staleAfterMs,
+  };
+}
+
 export async function fetchAuroraConditions() {
+  const fetchedAt = Date.now();
   const [kpRaw, windRaw, imfRaw] = await Promise.all([
     getJson(ENDPOINTS.kp),
     getJson(ENDPOINTS.solarWind),
     getJson(ENDPOINTS.imf),
   ]);
 
+  const kpIndex = Number(safeNumber(kpRaw?.data?.kp ?? kpRaw?.kp).toFixed(1));
+  const solarWindSpeed = Math.round(safeNumber(windRaw?.data?.speed ?? windRaw?.speed));
+  const bz = Number(safeNumber(imfRaw?.data?.bz ?? imfRaw?.bz).toFixed(1));
+
   return {
-    kpIndex: Number(Number(kpRaw?.data?.kp ?? kpRaw?.kp ?? 0).toFixed(1)),
-    solarWindSpeed: Math.round(Number(windRaw?.data?.speed ?? windRaw?.speed ?? 0)),
-    bz: Number(Number(imfRaw?.data?.bz ?? imfRaw?.bz ?? 0).toFixed(1)),
+    kpIndex,
+    solarWindSpeed,
+    bz,
+    freshness: buildFreshnessInfo(fetchedAt),
   };
 }
 
 export async function fetchAuroraNotices(region = 'au') {
+  const fetchedAt = Date.now();
   const raw = await getJson(ENDPOINTS.notices, `?region=${region}`);
   const notices = raw?.data || raw?.notices || [];
 
-  return notices.map((notice, idx) => ({
-    id: notice.id || `${notice.title}-${idx}`,
-    severity: String(notice.severity || notice.type || 'outlook').toLowerCase(),
-    title: notice.title || 'Aurora advisory',
-    message: notice.message || notice.summary || 'See source bulletin for details.',
-    issuedAt: notice.issued_at || notice.issuedAt || 'Unknown',
+  const normalizedNotices = notices.map((notice, idx) => ({
+    id: safeString(notice.id, `${safeString(notice.title, 'Aurora advisory')}-${idx}`),
+    severity: safeString(notice.severity || notice.type, 'outlook').toLowerCase(),
+    title: safeString(notice.title, 'Aurora advisory'),
+    message: safeString(notice.message || notice.summary, 'See source bulletin for details.'),
+    issuedAt: safeString(notice.issued_at || notice.issuedAt),
   }));
+
+  return {
+    items: normalizedNotices,
+    freshness: buildFreshnessInfo(fetchedAt),
+  };
 }
