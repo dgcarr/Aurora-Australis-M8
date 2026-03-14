@@ -65,6 +65,16 @@ cd Aurora-Australis-M8
 npm install
 ```
 
+If you get an error like `npm ERR! enoent Could not read package.json`, you are likely in the wrong folder.
+
+For example, running `npm install` from `C:\Users\<you>\Desktop` will fail because that directory has no `package.json`.
+Change into the cloned project directory first, then run install:
+
+```bash
+cd Aurora-Australis-M8
+npm install
+```
+
 ### 3) Start the Expo development server
 
 ```bash
