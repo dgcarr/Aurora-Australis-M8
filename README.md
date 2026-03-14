@@ -99,6 +99,23 @@ If you want cloud builds (APK/AAB/IPA) instead of only local Expo Go preview:
 npm install -g eas-cli
 ```
 
+You may see `npm WARN deprecated ...` messages while installing `eas-cli` globally.
+Those warnings are from transitive dependencies used by the CLI tooling and are common; they do **not** mean your app code is broken.
+As long as the install finishes successfully, you can continue with `eas login`.
+
+Optional alternative (avoids global install):
+
+```bash
+npx eas-cli --version
+```
+
+Then run EAS commands with `npx`, for example:
+
+```bash
+npx eas-cli login
+npx eas-cli build --platform android
+```
+
 ### 2) Log in to Expo
 
 ```bash
