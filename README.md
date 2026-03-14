@@ -111,6 +111,17 @@ eas build --platform android
 eas build --platform ios
 ```
 
+### 5) Build a development client (recommended for device testing)
+
+This project has an EAS `development` profile in `eas.json`. Use it to build a dev client:
+
+```bash
+eas build --platform android --profile development
+```
+
+If you see `The `expo` package was not found`, run `npm install` in the project root first so dependencies are installed locally before starting EAS commands.
+
+
 > Note: iOS production builds require an Apple Developer setup.
 
 ---
