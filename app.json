@@ -24,10 +24,6 @@
       ],
       "package": "com.auroraaustralis.predictor"
     },
-    "plugins": [
-      "expo-notifications",
-      "expo-location"
-    ],
     "scheme": "auroraaustralispredictor",
     "runtimeVersion": {
       "policy": "appVersion"
