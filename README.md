@@ -131,6 +131,13 @@ eas build --platform android --profile development
 
 If you see `The `expo` package was not found`, run `npm install` in the project root first so dependencies are installed locally before starting EAS commands.
 
+If you see `expo-dev-client` missing during a development build, install it explicitly and retry:
+
+```bash
+npx expo install expo-dev-client
+eas build --platform android --profile development
+```
+
 
 > Note: iOS production builds require an Apple Developer setup.
 
