@@ -13,18 +13,27 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your location helps estimate Aurora Australis visibility for your latitude.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Your location helps estimate Aurora Australis visibility for your latitude."
-      }
+      },
+      "bundleIdentifier": "com.auroraaustralis.predictor"
     },
     "android": {
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "POST_NOTIFICATIONS"
-      ]
+      ],
+      "package": "com.auroraaustralis.predictor"
     },
     "plugins": [
       "expo-notifications",
       "expo-location"
-    ]
+    ],
+    "scheme": "auroraaustralispredictor",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    }
   }
 }
